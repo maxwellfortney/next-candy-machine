@@ -58,7 +58,7 @@ solana-keygen new --outfile ~/.config/solana/devnet.json
 solana airdrop 1
 ```
 
-### Create and upload images and metadata
+### Create, upload, and verify images and metadata
 
 This guide will not cover creating images and metadata. For more info see [Token Metadata Standard](https://docs.metaplex.com/nft-standard) as well as [Prepare NFT Assets](https://docs.metaplex.com/create-candy/prepare-assets).
 
@@ -73,6 +73,11 @@ ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts 
 #### This will output our 2nd required environment variable into the terminal as `initialized config for a candy machine with publickey`, and will be a SOL address. Set `NEXT_PUBLIC_CANDY_MACHINE_CONFIG` in our `.env.local` to this address.
 
 #### If `initialized config for a candy machine with publickey` if not output into the termal, delete the file located at `./cache/devnet-temp.json` and re-run the command in step 1 above.
+
+2. (Optional, but recommended) Verify your assets. If all is well, this command will finish with output `ready to deploy!`
+```
+ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts verify -k ~/.config/solana/devnet.json
+```
 
 ### Create a candy machine
 
