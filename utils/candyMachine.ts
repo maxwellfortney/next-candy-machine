@@ -1,7 +1,9 @@
 import * as anchor from "@project-serum/anchor";
+import { Metadata } from "../libs/metaplex/index.esm";
 
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { sendTransactions, sleep } from ".";
+import { fetchHashTable } from "../hooks/useHashTable";
 
 export const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
   "cndyAnrLdpjq1Ssp1z8xxDsB8dxe7u4HL5Nxi2K5WXZ"
@@ -227,6 +229,56 @@ const getTokenWallet = async (
     )
   )[0];
 };
+
+export async function getNFTsForOwner(
+  connection: anchor.web3.Connection,
+  ownerAddress: anchor.web3.PublicKey
+) {
+  const allMintsCandyMachine = await fetchHashTable(
+    process.env.NEXT_PUBLIC_CANDY_MACHINE_ID!
+  );
+  const allTokens = [];
+  const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+    ownerAddress,
+    {
+      programId: TOKEN_PROGRAM_ID,
+    }
+  );
+
+  for (let index = 0; index < tokenAccounts.value.length; index++) {
+    const tokenAccount = tokenAccounts.value[index];
+    const tokenAmount = tokenAccount.account.data.parsed.info.tokenAmount;
+
+    if (
+      tokenAmount.amount == "1" &&
+      tokenAmount.decimals == "0" &&
+      allMintsCandyMachine.includes(tokenAccount.account.data.parsed.info.mint)
+    ) {
+      let [pda] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("metadata"),
+          TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+          new anchor.web3.PublicKey(
+            tokenAccount.account.data.parsed.info.mint
+          ).toBuffer(),
+        ],
+        TOKEN_METADATA_PROGRAM_ID
+      );
+      const accountInfo = await connection.getParsedAccountInfo(pda);
+
+      const metadata: any = new Metadata(
+        ownerAddress.toString(),
+        accountInfo.value
+      );
+      const dataRes = await fetch(metadata.data.data.uri);
+      if (dataRes.status === 200) {
+        allTokens.push(await dataRes.json());
+      }
+    }
+  }
+
+  return allTokens;
+}
 
 export const mintOneToken = async (
   candyMachine: CandyMachine,

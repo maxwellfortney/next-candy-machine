@@ -8,6 +8,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 import { Toaster } from "react-hot-toast";
 import Countdown from "react-countdown";
+import useWalletNfts from "../hooks/useWalletNFTs";
+import AnNFT from "../components/AnNFT/AnNFT";
 
 export default function Home() {
   const [balance] = useWalletBalance();
@@ -19,6 +21,8 @@ export default function Home() {
     startMintMultiple,
     nftsData,
   } = useCandyMachine();
+
+  const [isLoading, nfts] = useWalletNfts();
 
   const { connected } = useWallet();
 
@@ -99,7 +103,7 @@ export default function Home() {
             {nftsData.itemsAvailable}
           </p>
         )}
-        <div className="flex items-start justify-center flex-1 w-11/12 mt-10">
+        <div className="flex items-start justify-center w-11/12 my-10">
           {connected ? (
             <>
               {new Date(mintStartDate).getTime() < Date.now() ? (
@@ -136,6 +140,14 @@ export default function Home() {
           ) : (
             <p>connect wallet to mint</p>
           )}
+        </div>
+        <div className="flex flex-col w-full">
+          <h2 className="text-2xl font-bold">My NFTs</h2>
+          <div className="flex mt-3 gap-x-2">
+            {(nfts as any).map((nft: any) => {
+              return <AnNFT nft={nft} />;
+            })}
+          </div>
         </div>
       </div>
     </>
