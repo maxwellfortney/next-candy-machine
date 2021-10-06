@@ -72,6 +72,8 @@ ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts 
 
 #### This will output our 2nd required environment variable into the terminal as `initialized config for a candy machine with publickey`, and will be a SOL address. Set `NEXT_PUBLIC_CANDY_MACHINE_CONFIG` in our `.env.local` to this address.
 
+#### If `initialized config for a candy machine with publickey` if not output into the termal, delete the file located at `./cache/devnet-temp.json` and re-run the command in step 1 above.
+
 ### Create a candy machine
 
 1. Run the following command to create a candy machine
