@@ -21,7 +21,7 @@ This guide will not cover topics such as XXX.
 
 ### Installation
 
-1. Fork the project, then clone down. Example:
+1. Cone the project
 
 ```
 git clone https://github.com/maxwellfortney/next-candy-machine
