@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
@@ -144,8 +145,8 @@ export default function Home() {
         <div className="flex flex-col w-full">
           <h2 className="text-2xl font-bold">My NFTs</h2>
           <div className="flex mt-3 gap-x-2">
-            {(nfts as any).map((nft: any) => {
-              return <AnNFT nft={nft} />;
+            {(nfts as any).map((nft: any, i: number) => {
+              return <AnNFT key={i} nft={nft} />;
             })}
           </div>
         </div>

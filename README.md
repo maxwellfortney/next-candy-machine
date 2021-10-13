@@ -24,7 +24,7 @@ This guide will not cover topics such as XXX.
 
 ### Installation
 
-1. Cone the project
+1. Clone the project
 
 ```
 git clone https://github.com/maxwellfortney/next-candy-machine
@@ -78,6 +78,7 @@ ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts 
 #### If `initialized config for a candy machine with publickey` if not output into the terminal, delete the file located at `./cache/devnet-temp.json` and re-run the command in step 1 above.
 
 2. (Optional, but recommended) Verify your assets. If all is well, this command will finish with output `ready to deploy!`
+
 ```
 ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts verify -k ~/.config/solana/devnet.json
 ```
