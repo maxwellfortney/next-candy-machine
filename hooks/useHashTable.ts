@@ -1,8 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
-import { MetadataProgram, Metadata } from "../libs/metaplex/index.esm";
+import { MetadataProgram, Metadata } from "@metaplex/js";
 
 const rpcHost = process.env.NEXT_PUBLIC_SOLANA_RPC_HOST!;
 const connection = new anchor.web3.Connection(rpcHost);
