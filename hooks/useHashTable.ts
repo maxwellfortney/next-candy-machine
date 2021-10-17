@@ -14,8 +14,7 @@ export async function fetchHashTable(
   hash: string,
   metadataEnabled?: boolean
 ): Promise<any[]> {
-  const metadataProgram = new MetadataProgram();
-  const metadataAccounts = await metadataProgram.getProgramAccounts(
+  const metadataAccounts = await MetadataProgram.getProgramAccounts(
     connection,
     {
       filters: [
