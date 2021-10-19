@@ -1,5 +1,5 @@
 import * as anchor from "@project-serum/anchor";
-import { Metadata } from "../libs/metaplex/index.esm";
+import { Metadata } from "@metaplex/js";
 
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { sendTransactions, sleep } from ".";
