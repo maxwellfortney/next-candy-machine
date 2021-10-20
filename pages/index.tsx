@@ -12,7 +12,7 @@ import FAQ from "../components/Home/FAQ/FAQ";
 import Footer from "../components/Home/Footer/Footer";
 
 export default function Home() {
-    const [didVideoPlay, setDidVideoPlay] = useState(true);
+    const [didVideoPlay, setDidVideoPlay] = useState(false);
 
     return (
         <>
