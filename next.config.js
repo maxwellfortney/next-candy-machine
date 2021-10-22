@@ -19,9 +19,6 @@ const withTM = require("next-transpile-modules")([
   "@solana/wallet-adapter-torus",
 ]);
 
-const withImages = require('next-images')
-
-
 /** @type {import('next').NextConfig} */
 module.exports = withTM({
   reactStrictMode: true,
@@ -35,4 +32,4 @@ module.exports = withTM({
 
     return config;
   },
-}), withImages();
+});
