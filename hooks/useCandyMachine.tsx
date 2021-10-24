@@ -128,8 +128,8 @@ export default function useCandyMachine() {
                 }
             }
         } catch (error: any) {
-            let message = error.msg || "Minting failed! Please try again!";
-            if (!error.msg) {
+            let message = error.message || "Minting failed! Please try again!";
+            if (!error.message) {
                 if (error.message.indexOf("0x138")) {
                 } else if (error.message.indexOf("0x137")) {
                     message = `SOLD OUT!`;
@@ -233,8 +233,8 @@ export default function useCandyMachine() {
                 }
             }
         } catch (error: any) {
-            let message = error.msg || "Minting failed! Please try again!";
-            if (!error.msg) {
+            let message = error.message || "Minting failed! Please try again!";
+            if (!error.message) {
                 if (error.message.indexOf("0x138")) {
                 } else if (error.message.indexOf("0x137")) {
                     message = `SOLD OUT!`;
