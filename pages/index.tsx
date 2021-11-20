@@ -1,156 +1,76 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import Head from "next/head";
-import { useEffect, useState } from "react";
-
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import useCandyMachine from "../hooks/useCandyMachine";
-import useWalletBalance from "../hooks/useWalletBalance";
 import { useWallet } from "@solana/wallet-adapter-react";
-
-import { Toaster } from "react-hot-toast";
-import Countdown from "react-countdown";
-import useWalletNfts from "../hooks/useWalletNFTs";
-import AnNFT from "../components/AnNFT/AnNFT";
+import { useMemo } from "react";
+import Navbar from "../components/Navbar/Navbar";
+import ProgressCircle from "../components/ProgressCircle/ProgressCircle";
+import { NUM_TICKETS, TICKET_PRICE } from "../consts";
+import useCandyMachine from "../hooks/useCandyMachine";
 
 export default function Home() {
-  const [balance] = useWalletBalance();
-  const {
-    isSoldOut,
-    mintStartDate,
-    isMinting,
-    startMint,
-    startMintMultiple,
-    nftsData,
-  } = useCandyMachine();
+    const { nftsData, startMint, isMinting, mintStartDate } = useCandyMachine();
+    const { wallet, connected, publicKey } = useWallet();
 
-  const [isLoading, nfts] = useWalletNfts();
+    const buttonContent = useMemo(() => {
+        if (isMinting) return "Minting ticket...";
+        return "Buy a ticket";
+    }, [isMinting]);
 
-  const { connected } = useWallet();
-
-  const [isMintLive, setIsMintLive] = useState(false);
-
-  useEffect(() => {
-    if (new Date(mintStartDate).getTime() < Date.now()) {
-      setIsMintLive(true);
+    async function handleClick() {
+        if (
+            wallet &&
+            connected &&
+            publicKey &&
+            new Date().getTime() > new Date(mintStartDate).getTime()
+        ) {
+            console.log("Starting mint");
+            await startMint();
+        }
     }
-  }, []);
-
-  const MintMany = () => {
-    const [mintCount, setMintCount] = useState(5);
 
     return (
-      <>
-        <button
-          onClick={() => startMintMultiple(mintCount)}
-          disabled={isMinting}
-          className="px-4 py-2 mx-auto font-bold text-white transition-opacity rounded-lg hover:opacity-70 bg-gradient-to-br from-green-300 via-blue-500 to-purple-600"
-        >
-          {isMinting ? "loading" : `mint ${mintCount}`}
-        </button>
+        <div className="flex flex-col items-center w-full h-screen bg-gradient-to-tr from-[#585858] to-[#1E1E1E]">
+            <Navbar />
+            <div className="relative flex flex-col items-center justify-center flex-1 text-white">
+                <div className="z-20 flex flex-col items-center">
+                    <h1 className="text-5xl font-black lg:text-7xl">
+                        Feeling lucky?
+                    </h1>
+                    <p className="mt-5 font-medium">
+                        The current payout is{" "}
+                        <span className="text-[#0CFF07]">
+                            {(
+                                (NUM_TICKETS * TICKET_PRICE * 0.9) /
+                                TICKET_PRICE
+                            ).toFixed(2)}
+                            x
+                        </span>
+                    </p>
 
-        <input
-          disabled={isMinting}
-          type="number"
-          min={2}
-          max={10}
-          className="px-2 mx-auto mt-5 font-bold text-white bg-gray-500"
-          value={mintCount}
-          onChange={(e) => setMintCount((e.target as any).value)}
-        />
-        <p className="mx-auto mt-2">min 2; max 10;</p>
-      </>
+                    <button
+                        disabled={
+                            new Date().getTime() >
+                                new Date(mintStartDate).getTime() || !publicKey
+                        }
+                        onClick={handleClick}
+                        className={`transition-opacity duration-200 bg-gradient-to-br from-[#05FF00] to-[#03AB00] px-5 py-3 mt-10 font-black rounded-lg ${
+                            new Date().getTime() >
+                                new Date(mintStartDate).getTime() &&
+                            publicKey &&
+                            wallet
+                                ? "hover:opacity-70"
+                                : "cursor-default"
+                        }`}
+                    >
+                        {buttonContent}
+                    </button>
+                    <p className="mt-2 font-medium">{TICKET_PRICE}/ticket</p>
+
+                    <p className="mt-4 font-medium">
+                        {nftsData.itemsRemaining} tickets remaining
+                    </p>
+                </div>
+
+                <ProgressCircle />
+            </div>
+        </div>
     );
-  };
-
-  return (
-    <>
-      <Head>
-        <title>next-candy-machine</title>
-        <meta
-          name="description"
-          content="Simplified NextJs with typescript example app integrated with Metaplex's Candy Machine"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <div className="flex flex-col items-center min-h-screen mx-6">
-        <Toaster />
-        <div className="flex items-center justify-between w-full mt-3">
-          <h1 className="text-2xl font-bold">next-candy-machine</h1>
-          <div className="flex items-center">
-            {connected && (
-              <div className="flex items-end mr-2">
-                <p className="text-xs text-gray-400">balance</p>
-                <p className="mx-1 font-bold leading-none">
-                  {balance.toFixed(2)}
-                </p>
-                <p
-                  className="font-bold leading-none text-transparent bg-clip-text"
-                  style={{
-                    backgroundImage: `linear-gradient(to bottom right, #00FFA3, #03E1FF, #DC1FFF)`,
-                  }}
-                >
-                  SOL
-                </p>
-              </div>
-            )}
-            <WalletMultiButton />
-          </div>
-        </div>
-        {connected && (
-          <p className="mr-auto text-sm">
-            <span className="font-bold">Available/Minted/Total:</span>{" "}
-            {nftsData.itemsRemaining}/{nftsData.itemsRedeemed}/
-            {nftsData.itemsAvailable}
-          </p>
-        )}
-        <div className="flex items-start justify-center w-11/12 my-10">
-          {connected ? (
-            <>
-              {new Date(mintStartDate).getTime() < Date.now() ? (
-                <>
-                  {isSoldOut ? (
-                    <p>SOLD OUT</p>
-                  ) : (
-                    <>
-                      <div className="flex flex-col w-1/2">
-                        <h1 className="mb-10 text-3xl font-bold">Mint One</h1>
-                        <button
-                          onClick={startMint}
-                          disabled={isMinting}
-                          className="px-4 py-2 mx-auto font-bold text-white transition-opacity rounded-lg hover:opacity-70 bg-gradient-to-br from-green-300 via-blue-500 to-purple-600"
-                        >
-                          {isMinting ? "loading" : "mint 1"}
-                        </button>
-                      </div>
-                      <div className="flex flex-col w-1/2">
-                        <h1 className="mb-10 text-3xl font-bold">Mint Many</h1>
-                        <MintMany />
-                      </div>
-                    </>
-                  )}
-                </>
-              ) : (
-                <Countdown
-                  date={mintStartDate}
-                  onMount={({ completed }) => completed && setIsMintLive(true)}
-                  onComplete={() => setIsMintLive(true)}
-                />
-              )}
-            </>
-          ) : (
-            <p>connect wallet to mint</p>
-          )}
-        </div>
-        <div className="flex flex-col w-full">
-          <h2 className="text-2xl font-bold">My NFTs</h2>
-          <div className="flex mt-3 gap-x-2">
-            {(nfts as any).map((nft: any, i: number) => {
-              return <AnNFT key={i} nft={nft} />;
-            })}
-          </div>
-        </div>
-      </div>
-    </>
-  );
 }
