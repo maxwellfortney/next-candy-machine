@@ -1,5 +1,3 @@
-# IF YOU HAVE PULLED/CLONED WITHIN THE LAST 48HRS (as of 10/21/21) PLEASE PULL AGAIN. UNRELATED FILES WERE PUSHED TO THE REPO BY ACCIDENT, BUT HAVE BEEN REMOVED.
-
 <a href="https://www.buymeacoffee.com/maxwellfortney" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 
@@ -58,6 +56,13 @@ solana config set --url https://api.devnet.solana.com
 solana-keygen new --outfile ~/.config/solana/devnet.json
 ```
 
+2. Set the keypair in your Solana config
+
+```
+solana config set --keypair ~/.config/solana/devnet.json
+```
+
+
 #### This will output our 1st required environment variable into the terminal as `pubkey`, and will be our treasury SOL address. Set `NEXT_PUBLIC_TREASURY_ADDRESS` in our `.env.local` to this address.
 
 3. Airdrop SOL to wallet (repeat command if desired)
@@ -112,4 +117,17 @@ ts-node ~/metaplex-foundation/metaplex/js/packages/cli/src/candy-machine-cli.ts 
 
 ### We are done!!
 
-You can now start the NextJs app by running `yarn dev` and navigating to `http://localhost:3000/`, connect your desired wallet and begin minting your new NFTs.
+You can now start the NextJs app by running `yarn dev` and navigating to `http://localhost:3000/`, connect your desired wallet and begin minting your devnet new NFTs.
+
+
+
+# Deployment to Vercel and migration to mainnet-beta
+## Changing your `.env.local` variables
+1. Change `NEXT_PUBLIC_SOLANA_NETWORK` to `mainnet-beta`
+2. Change `NEXT_PUBLIC_SOLANA_RPC_HOST` to `https://api.mainnet-beta.solana.com` your preffered [RPC URL](https://docs.solana.com/cluster/rpc-endpoints) such as [QuickNode](https://www.quicknode.com/)
+
+## Deploying to Vercel
+1. Connect your Github account to Vercel
+2. Create a new project from your repo
+3. Before clicking `Deploy`, add all of your environment variables
+4. Click `Deploy`
